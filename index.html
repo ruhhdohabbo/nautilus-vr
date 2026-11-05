@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salão do Nautilus</title>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+<style>
+  :root { --abismo:#0D1726; --marinho:#2C4357; --nevoa:#D2DBC0; --latao:#CFC87A; --caqui:#B3AD94; }
+  html, body { margin:0; height:100%; background:var(--abismo); overflow:hidden; }
+  canvas { display:block; touch-action:none; cursor:grab; }
+  canvas:active { cursor:grabbing; }
+  #entrada {
+    position:fixed; left:clamp(16px,4vw,48px); bottom:clamp(16px,4vw,48px); max-width:min(440px,calc(100vw - 32px));
+    color:var(--nevoa); font:15px/1.5 Georgia,'Times New Roman',serif; text-shadow:0 1px 8px rgba(13,23,38,.9);
+  }
+  #entrada[hidden] { display:none; }
+  h1 { margin:0 0 6px; font-weight:400; font-size:clamp(28px,5vw,44px); line-height:1.1; color:var(--latao); }
+  #estado { margin:0 0 16px; color:var(--caqui); }
+  .botoes { display:flex; flex-wrap:wrap; gap:10px; }
+  button {
+    font:inherit; color:var(--abismo); background:var(--latao); border:1px solid var(--latao); padding:10px 18px; cursor:pointer;
+  }
+  button.discreto { color:var(--nevoa); background:rgba(13,23,38,.55); border-color:var(--caqui); }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  button:focus-visible { outline:2px solid var(--nevoa); outline-offset:2px; }
+  .ajuda { margin:14px 0 0; font-size:13px; color:var(--caqui); }
+  #hud { position:fixed; top:12px; left:12px; margin:0; padding:8px 10px; color:var(--nevoa); background:rgba(13,23,38,.75); font:12px/1.4 ui-monospace,Menlo,monospace; white-space:pre; }
+  #hud[hidden] { display:none; }
+</style>
+</head>
+<body>
+<pre id="hud" hidden></pre>
+<div id="entrada">
+  <h1>Salão do Nautilus</h1>
+  <p id="estado">Carregando…</p>
+  <div class="botoes">
+    <button id="btVR" disabled>Entrar em VR</button>
+    <button id="btTela" class="discreto" disabled>Ver na tela</button>
+  </div>
+  <p class="ajuda">A visita tem um impacto forte, com piscadas de luz. Se sentir tontura, feche os olhos ou tire o óculos.</p>
+  <p class="ajuda">Na tela: arraste para olhar, WASD para andar. No óculos: alavanca esquerda anda, direita gira, A ou X mostra o medidor.</p>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
