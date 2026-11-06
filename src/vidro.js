@@ -48,6 +48,22 @@ uniform vec3 uLampPos[4];
 #else
 #define LAMP_K 1.
 #endif
+// O centro da curva da vitrine fica no meio da sala. Perto dele, o vidro inteiro amplia um pedacinho da popa, e uma linha dela vira um risco sobre a imagem.
+// O reflexo é lido numa curva bem mais aberta, e vem macio e fraco: mostra a sala de pé, como numa janela de verdade, sem competir com o vídeo.
+#ifdef RACHA
+#define REFL_ABRE vec3(0.,0.,-2.)
+#define REFL_ONDA .012
+#else
+#define REFL_ABRE vec3(0.)
+#define REFL_ONDA .004
+#endif
+#if defined(RACHA) || defined(MESMA_TELA)
+#define REFL_MACIO 1.5
+#define REFL_K 1.6
+#else
+#define REFL_MACIO 0.
+#define REFL_K 2.6
+#endif
 varying vec3 vW; varying vec2 vQ;
 float ign(vec2 p){ return fract(52.9829189*fract(dot(p,vec2(.06711056,.00583715)))); }
 // Do raio na água até o vídeo: a saída da esfera de raio R, e a direção desse ponto vista de uCen em projeção estereográfica.
@@ -159,11 +175,11 @@ void main(){
   lin+=vec3(.06,.085,.07)*smoothstep(.965,.982,r)*(1.-smoothstep(.982,.998,r));
   // Reflexo: Fresnel pela normal local, a sala assada num cubo com projeção em caixa. Vidro soprado não é espelho perfeito: ondula de leve.
   float F=.04+.96*x*x*x*x*x;
-  vec3 Nf=normalize(N+vec3(sin(vW.y*2.3+vW.x*1.1),sin(vW.x*1.7-vW.y*.8),0.)*.004);
+  vec3 Nf=normalize(N+REFL_ABRE+vec3(sin(vW.y*2.3+vW.x*1.1),sin(vW.x*1.7-vW.y*.8),0.)*REFL_ONDA);
   vec3 R=V-2.*dot(V,Nf)*Nf;
   vec3 ic=(mix(uCxMin,uCxMax,step(0.,R))-vW)/R;
-  vec3 rc=textureCube(uSalaRefl,vW+R*min(ic.x,min(ic.y,ic.z))-uCxC).rgb;
-  lin=lin*(1.-F)+rc*F*2.6*LAMP_K+luzRacha;
+  vec3 rc=textureCube(uSalaRefl,vW+R*min(ic.x,min(ic.y,ic.z))-uCxC,REFL_MACIO).rgb;
+  lin=lin*(1.-F)+rc*F*REFL_K*LAMP_K+luzRacha;
   gl_FragColor=vec4(sqrt(lin)+(ign(gl_FragCoord.xy)-.5)/255.,1.);
 }`;
 
